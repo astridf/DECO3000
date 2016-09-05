@@ -1,15 +1,14 @@
-import org.openkinect.processing.*;
+import oscP5.*;
+import netP5.*;
 import gab.opencv.*;
 import java.awt.Rectangle;
 import processing.video.*;
-import oscP5.*;
-import netP5.*;
 
-KinectData kinect;
-//OpenCV for blob detection
 OpenCV opencv;
-//Image that holds each frame from the kinect
-PImage displayKinect;
+//Simulated video
+Movie video;
+//Image that holds each frame of the video
+PImage currentFrame;
 //Set up osc location
 OscP5 oscP5Location1;
 //Set up osc net address
@@ -26,30 +25,35 @@ int currentBlobID = 0;
 //Minimum size of blob
 int minBlobSize = 20;
 
-// Depth data
-int[] depth;
-
 void setup() {
     frameRate(30);
-    size(515, 430, P2D);
-    kinect = new KinectData(this);
-    opencv = new OpenCV(this, 515, 430);
+    size(854, 480, P2D);
+
+    //Kinect simulated video
+    video = new Movie(this, "b.mp4");
+    video.loop();
+    video.play(); 
+
+    opencv = new OpenCV(this, 854, 480);
     contours = new ArrayList<Contour>();
     blobList = new ArrayList<Blob>();
+    
     oscP5Location1 = new OscP5(this, 3334);
     location2 = new NetAddress("127.0.0.1", 3333);
 }
 
 void draw() {
     background(0);
-    //Display the Kinect image
-    kinect.display();
-  
+    //Grab the last frame
+    if (video.available()) {
+        video.read();
+    }
+    
     //Load the frame into OpenCV
-    opencv.loadImage(displayKinect);
+    opencv.loadImage(video);
     
     //Take a snapshot so we can display it later
-    displayKinect = opencv.getSnapshot();
+    currentFrame = opencv.getSnapshot();
     
     //Clean it up a little bit to improve blob tracking
     opencv.threshold(75);
@@ -57,7 +61,7 @@ void draw() {
     opencv.erode();
 
     // Display image
-    image(displayKinect, 0, 0);
+    image(currentFrame, 0, 0);
 
     //Detect all blobs
     detectBlobs();

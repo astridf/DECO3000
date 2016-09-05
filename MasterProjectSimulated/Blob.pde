@@ -61,7 +61,7 @@ class Blob {
         //Add the ID label, offset so we can see it
         text("x: " + int(getBlobX()) + " y: " + int(getBlobY()), r.x + 10, r.y + 15);
         text("Speed: " + int(speed), r.x + 10, r.y + 35);
-        text("Depth: " + getDepth(), r.x + 10, r.y + 55);
+        text("Alive: " + aliveTime, r.x + 10, r.y + 55);
     }
 
     //Update location
@@ -133,16 +133,6 @@ class Blob {
     //Return the speed of the blob
     public float getBlobSpeed() {
         return speed;   
-    }
-    
-    //Return the depth of the centre point in the blob
-    //Unreliable at this stage, will probably need to average it since it drops pixels sometimes
-    public int getDepth() {
-        int x = int(getBlobX());
-        int y = int(getBlobY());
-        int offset = x + y * 480;
-        int rawDepth = depth[offset];
-        return rawDepth;
     }
 }
 
