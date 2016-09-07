@@ -3,7 +3,11 @@ import netP5.*;
 import gab.opencv.*;
 import java.awt.Rectangle;
 import processing.video.*;
+import themidibus.*;
 
+//Create the midibus port
+MidiBus midiport;
+//Create the OpenCV instance
 OpenCV opencv;
 //Simulated video
 Movie video;
@@ -21,25 +25,30 @@ ArrayList<Contour> newFrameBlobs;
 ArrayList<Blob> blobList;
 
 //Total number of blobs so far, we use this as an identifier
-int currentBlobID = 0;
+int currentBlobID = 1;
 //Minimum size of blob
 int minBlobSize = 20;
 
 void setup() {
     frameRate(30);
-    size(854, 480, P2D);
+    size(512, 428, P2D);
 
     //Kinect simulated video
-    video = new Movie(this, "b.mp4");
+    video = new Movie(this, "c.mp4");
     video.loop();
     video.play(); 
 
-    opencv = new OpenCV(this, 854, 480);
+    opencv = new OpenCV(this, 512, 428);
     contours = new ArrayList<Contour>();
     blobList = new ArrayList<Blob>();
     
     oscP5Location1 = new OscP5(this, 3334);
     location2 = new NetAddress("127.0.0.1", 3333);
+    
+    midiport.list();
+    //May need to change this for your computer, look at the outputs from the
+    //line above, and change the third parameter to the port you want
+    midiport = new MidiBus(this, -1, 5);
 }
 
 void draw() {
@@ -71,6 +80,7 @@ void draw() {
         strokeWeight(2);
         blob.display();
     }
+    sendMIDI();
     sendTUIO();
 }
 
