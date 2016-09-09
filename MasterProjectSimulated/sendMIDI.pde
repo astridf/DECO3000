@@ -15,7 +15,7 @@ int leftCount = 0;
 int middleCount = 0;
 int rightCount = 0;
 
-void sendMIDI() {
+void blobsToMidi() {
     //First of all we want to store all the blobs in the right lists
     for (Blob blob : blobList) {
         //If blob is in left third of canvas
@@ -55,7 +55,14 @@ void sendMIDI() {
         for (int j = 0; j < 2; j++) {
             //Check if the blob ID from the leftBlobs list matches the blob ID stored
             if (blobIDsAndChannels[j][0] == leftBlobs.get(i) && leftBlobs.get(i) != 0){
-                println( blobIDsAndChannels[j][0] + " left matches " + blobIDsAndChannels[j][1]);
+                //println( blobIDsAndChannels[j][0] + " left matches " + blobIDsAndChannels[j][1]);
+                if (j == 0){
+                    //midi1.sendNoteOn(1, 50, 50);
+                    sendMIDI(midi1, leftBlobs.get(i), j+1);
+                }
+                else {
+                    sendMIDI(midi2, leftBlobs.get(i), j+1);
+                }
                 hasSentLeft[j] = 1;
                 leftBlobs.set(i, 0);
             }
@@ -67,9 +74,8 @@ void sendMIDI() {
         //For each blob in the leftBlobs list
         for (int i = 0; i < leftBlobs.size() ; i++) {
             //If the track hasn't been sent, send a blob
-            if(hasSentLeft[j] != 1 && leftBlobs.get(i) != 0){
+            if (hasSentLeft[j] != 1 && leftBlobs.get(i) != 0){
                 blobIDsAndChannels[j][0] = leftBlobs.get(i);
-                println("Add " + leftBlobs.get(i) + " to track " + j);
                 hasSentLeft[j] = 1;
                 leftBlobs.set(i, 0);
             }
@@ -85,7 +91,14 @@ void sendMIDI() {
         for (int j = 0; j < 2; j++) {
             //Check if the blob ID from the middleBlobs list matches the blob ID stored
             if (blobIDsAndChannels[j + 2][0] == middleBlobs.get(i) && middleBlobs.get(i) != 0){
-                println(blobIDsAndChannels[j + 2][0] + " middle matches " + blobIDsAndChannels[j + 2][1]);
+                //println(blobIDsAndChannels[j + 2][0] + " middle matches " + blobIDsAndChannels[j + 2][1]);
+                if (j == 0){
+                    //midi1.sendNoteOn(1, 50, 50);
+                    sendMIDI(midi3, middleBlobs.get(i), j+3);
+                }
+                else {
+                    sendMIDI(midi4, middleBlobs.get(i), j+3);
+                }
                 hasSentMiddle[j] = 1;
                 middleBlobs.set(i, 0);
             }
@@ -97,9 +110,8 @@ void sendMIDI() {
         //For each blob in the middleBlobs list
         for (int i = 0; i < middleBlobs.size() ; i++) {
             //If the track hasn't been sent, send a blob
-            if(hasSentMiddle[j] != 1 && middleBlobs.get(i) != 0){
+            if (hasSentMiddle[j] != 1 && middleBlobs.get(i) != 0){
                 blobIDsAndChannels[j + 2][0] = middleBlobs.get(i);
-                println("Add " + middleBlobs.get(i) + " to track " + j);
                 hasSentMiddle[j] = 1;
                 middleBlobs.set(i, 0);
             }
@@ -115,7 +127,14 @@ void sendMIDI() {
         for (int j = 0; j < 2; j++) {
             //Check if the blob ID from the rightBlobs list matches the blob ID stored
             if (blobIDsAndChannels[j + 4][0] == rightBlobs.get(i) && rightBlobs.get(i) != 0){
-                println(blobIDsAndChannels[j + 4][0] + " right matches " + blobIDsAndChannels[j + 4][1]);
+                //println(blobIDsAndChannels[j + 4][0] + " right matches " + blobIDsAndChannels[j + 4][1]);
+                if (j == 0){
+                    //midi1.sendNoteOn(1, 50, 50);
+                    sendMIDI(midi5, rightBlobs.get(i), j+5);
+                }
+                else {
+                    sendMIDI(midi6, rightBlobs.get(i), j+5);
+                }
                 hasSentRight[j] = 1;
                 rightBlobs.set(i, 0);
             }
@@ -127,13 +146,53 @@ void sendMIDI() {
         //For each blob in the rightBlobs list
         for (int i = 0; i < rightBlobs.size() ; i++) {
             //If the track hasn't been sent, send a blob
-            if(hasSentRight[j] != 1 && rightBlobs.get(i) != 0){
+            if (hasSentRight[j] != 1 && rightBlobs.get(i) != 0){
                 blobIDsAndChannels[j + 4][0] = rightBlobs.get(i);
-                println("Add " + rightBlobs.get(i) + " to track " + j);
                 hasSentRight[j] = 1;
                 rightBlobs.set(i, 0);
             }
         }
     }
     rightBlobs.clear();
+}
+
+void sendMIDI(MidiBus midiPort, int id, int channel) {
+    for (Blob blob : blobList) {
+        if(blob.getBlobID() == id) {
+             //Y axis NOTE
+             float blobY = map(blob.getBlobY(), 0, 428, 0, 127);
+             midiPort.sendNoteOn(1, int(blobY), 127); 
+             
+             //Depth
+             int blobDepth = 63; //Will implement once depth is stable
+             midiPort.sendControllerChange(channel, 1, blobDepth); 
+ 
+             //Lifespan (check if lifespan over 127 frames)
+             int blobLifeSpan = 0;
+             if (blob.getAliveTime() > 127) {
+                 blobLifeSpan = 127;
+             }
+             else {
+                 blobLifeSpan = blob.getAliveTime();
+             }     
+             midiPort.sendControllerChange(channel, 2, blobLifeSpan); 
+             
+             //Lifespan (limiting to 28 atm, will pick a better value when it's stable)
+             float blobSpeed = 0;
+             if (blob.getBlobSpeed() > 28) {
+                 blobSpeed = 28;
+             }
+             else {
+                 blobSpeed = blob.getBlobSpeed();
+             }     
+             midiPort.sendControllerChange(channel, 3, int(blobSpeed)); 
+             
+             //X axis position
+             float blobX = map(blob.getBlobY(), 0, 512, 0, 127);
+             midiPort.sendControllerChange(channel, 4, int(blobX)); 
+             
+             break;
+        }
+    }
+   
 }

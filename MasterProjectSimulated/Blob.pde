@@ -72,8 +72,8 @@ class Blob {
         
         aliveTime++;
         
-        distance = dist(prevX, prevY, getBlobX(), getBlobY());
-        speed = distance;
+        distance += dist(prevX, prevY, getBlobX(), getBlobY());
+        speed = distance/aliveTime;
        
         prevX = getBlobX();
         prevY = getBlobY();

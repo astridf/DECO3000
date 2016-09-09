@@ -6,7 +6,13 @@ import processing.video.*;
 import themidibus.*;
 
 //Create the midibus port
-MidiBus midiport;
+MidiBus midi1;
+MidiBus midi2;
+MidiBus midi3;
+MidiBus midi4;
+MidiBus midi5;
+MidiBus midi6;
+
 //Create the OpenCV instance
 OpenCV opencv;
 //Simulated video
@@ -45,10 +51,16 @@ void setup() {
     oscP5Location1 = new OscP5(this, 3334);
     location2 = new NetAddress("127.0.0.1", 3333);
     
-    midiport.list();
+   
     //May need to change this for your computer, look at the outputs from the
     //line above, and change the third parameter to the port you want
-    midiport = new MidiBus(this, -1, 5);
+    midi1 = new MidiBus(this, 3, "midi1");
+    midi2 = new MidiBus(this, 4, "midi2");
+    midi3 = new MidiBus(this, 5, "midi3");
+    midi4 = new MidiBus(this, 6, "midi4");
+    midi5 = new MidiBus(this, 7, "midi5");
+    midi6 = new MidiBus(this, 8, "midi6");
+    midi1.list();
 }
 
 void draw() {
@@ -80,7 +92,7 @@ void draw() {
         strokeWeight(2);
         blob.display();
     }
-    sendMIDI();
+    blobsToMidi();
     sendTUIO();
 }
 
