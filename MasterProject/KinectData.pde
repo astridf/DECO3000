@@ -2,7 +2,7 @@
 class KinectData {
     
     // Depth threshold
-    int depthThreshold = 1000;
+    int depthThreshold = 750;
     
     //Kinect2 class
     Kinect2 kinect2;
@@ -12,6 +12,7 @@ class KinectData {
         kinect2.initDepth();
         kinect2.initDevice();
         displayKinect = createImage(kinect2.depthWidth, kinect2.depthHeight, RGB);
+        println(kinect2.depthHeight);
     }
     
     void display() {

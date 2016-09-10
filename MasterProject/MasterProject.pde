@@ -4,6 +4,15 @@ import java.awt.Rectangle;
 import processing.video.*;
 import oscP5.*;
 import netP5.*;
+import themidibus.*;
+
+//Create the midibus port
+MidiBus midi1;
+MidiBus midi2;
+MidiBus midi3;
+MidiBus midi4;
+MidiBus midi5;
+MidiBus midi6;
 
 KinectData kinect;
 //OpenCV for blob detection
@@ -31,13 +40,23 @@ int[] depth;
 
 void setup() {
     frameRate(30);
-    size(515, 430, P2D);
+    size(512, 424, P2D);
     kinect = new KinectData(this);
-    opencv = new OpenCV(this, 515, 430);
+    opencv = new OpenCV(this, 512, 424);
     contours = new ArrayList<Contour>();
     blobList = new ArrayList<Blob>();
     oscP5Location1 = new OscP5(this, 3334);
     location2 = new NetAddress("127.0.0.1", 3333);
+    
+    //May need to change this for your computer, look at the outputs from the
+    //line above, and change the third parameter to the port you want
+    midi1 = new MidiBus(this, 3, "midi1");
+    midi2 = new MidiBus(this, 4, "midi2");
+    midi3 = new MidiBus(this, 5, "midi3");
+    midi4 = new MidiBus(this, 6, "midi4");
+    midi5 = new MidiBus(this, 7, "midi5");
+    midi6 = new MidiBus(this, 8, "midi6");
+    midi1.list();
 }
 
 void draw() {
@@ -67,7 +86,25 @@ void draw() {
         strokeWeight(2);
         blob.display();
     }
+    blobsToMidi();
     sendTUIO();
+
+    int threshold = kinect.getThreshold();
+    fill(235);
+    text("threshold: " + threshold, 30, 400);
 }
 
+// Adjust the threshold with key presses
+void keyPressed() {
+  int t = kinect.getThreshold();
+  if (key == CODED) {
+    if (keyCode == UP) {
+      t +=5;
+      kinect.setThreshold(t);
+    } else if (keyCode == DOWN) {
+      t -=5;
+      kinect.setThreshold(t);
+    }
+  }
+}
 

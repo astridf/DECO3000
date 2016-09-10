@@ -135,13 +135,11 @@ class Blob {
         return speed;   
     }
     
-    //Return the depth of the centre point in the blob
-    //Unreliable at this stage, will probably need to average it since it drops pixels sometimes
+    //Return the depth of the centre point in the blob (semi-reliable)
     public int getDepth() {
         int x = int(getBlobX());
         int y = int(getBlobY());
-        int offset = x + y * 480;
-        int rawDepth = depth[offset];
+        int rawDepth = depth[displayKinect.width - x - 1 + y * displayKinect.width];
         return rawDepth;
     }
 }
