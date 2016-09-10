@@ -167,7 +167,7 @@ void sendMIDI(MidiBus midiPort, int id, int channel) {
              int threshold = kinect.getThreshold();
              int blobDepth = blob.getDepth();
              float depthVal = map(blobDepth, 0, threshold, 0, 127);
-             midiPort.sendControllerChange(channel, 1, depthVal); 
+             midiPort.sendControllerChange(channel, 1, int(depthVal)); 
  
              //Lifespan (check if lifespan over 127 frames)
              int blobLifeSpan = 0;
