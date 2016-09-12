@@ -192,7 +192,7 @@ void sendMIDI(MidiBus midiPort, int id, int channel) {
              midiPort.sendControllerChange(channel, 3, int(blobSpeed)); 
              
              //X axis position
-             float blobX = map(blob.getBlobY(), 0, 512, 0, 127);
+             float blobX = map(blob.getBlobX(), 0, 512, 0, 127);
              midiPort.sendControllerChange(channel, 4, int(blobX)); 
              
              break;

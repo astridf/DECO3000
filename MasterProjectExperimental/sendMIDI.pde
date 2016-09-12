@@ -17,27 +17,27 @@ int rightCount = 0;
 
 void blobsToMidi() {
     //First of all we want to store all the blobs in the right lists
-    for (Blob blob : blobList) {
+    for (TrackedBlob blob : blobList) {
         //If blob is in left third of canvas
         if (blob.getBlobX() <= (width/3)){
             //Just check incase there are more than 5 blobs, we can ignore
             if(rightCount <= 4){
                 //We want to add it's ID so we can check it in the next step
-                leftBlobs.append(blob.getBlobID());
+                leftBlobs.append(blob.getID());
                 leftCount++;
             }
         }
         //If blob is in the middle
         else if (blob.getBlobX() > (width/3) && blob.getBlobX() <= ((width/3)*2)){
             if(middleCount <= 4){
-                middleBlobs.append(blob.getBlobID());
+                middleBlobs.append(blob.getID());
                 middleCount++;
             }
         }
         //If blob is in the right third
         else {
             if(rightCount <= 4){
-                rightBlobs.append(blob.getBlobID());
+                rightBlobs.append(blob.getID());
                 rightCount++;
             }  
         }
@@ -157,15 +157,19 @@ void blobsToMidi() {
 }
 
 void sendMIDI(MidiBus midiPort, int id, int channel) {
-    for (Blob blob : blobList) {
-        if(blob.getBlobID() == id) {
+    for (TrackedBlob blob : blobList) {
+        if(blob.getID() == id) {
              //Y axis NOTE
-             float blobY = map(blob.getBlobY(), 0, 428, 0, 127);
+             float blobY = map((blob.getBlobY()-150), 0, 274, 0, 127);
              midiPort.sendNoteOn(1, int(blobY), 127); 
              
              //Depth
-             int blobDepth = 63; //Will implement once depth is stable
-             midiPort.sendControllerChange(channel, 1, blobDepth); 
+             int threshold = kinect.getThreshold();
+             int blobDepth = blob.getDepth();
+             //Need to map threshold as 0, max push in as 127
+             //I've put it as 250mm for now, will need to adjust
+             float depthVal = map(blobDepth, threshold, threshold - 250, 0, 127);
+             midiPort.sendControllerChange(channel, 1, int(depthVal)); 
  
              //Lifespan (check if lifespan over 127 frames)
              int blobLifeSpan = 0;
