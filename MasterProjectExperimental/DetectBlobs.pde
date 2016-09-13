@@ -9,7 +9,7 @@ void detectBlobs(BlobDetection newBlobList) {
         for (int i = 0; i < newBlobList.getBlobNb(); i++) {
             b = newBlobList.getBlob(i);
             //Add blob to the list
-            if( ((b.h * height) > 30) ){
+            if( ((b.h * height) > 20) ){
               blobList.add(new TrackedBlob(this, currentBlobID, int(b.x * width), int(b.y * height)));
               //Increment total blobs
               currentBlobID++;
@@ -50,7 +50,7 @@ void detectBlobs(BlobDetection newBlobList) {
         //Draw in any blobs that are new and were not matched
         for (int i = 0; i < newBlobList.getBlobNb(); i++) {
             if (!used[i]) {
-              if( ((newBlobList.getBlob(i).h * height) > 30) ){
+              if( ((newBlobList.getBlob(i).h * height) > 20) ){
                 //Add blob to the list
                 blobList.add(new TrackedBlob(this, currentBlobID, int(newBlobList.getBlob(i).x * width), int(newBlobList.getBlob(i).y * height)));
                //Increment total blobs
