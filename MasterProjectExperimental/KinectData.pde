@@ -12,6 +12,10 @@ class KinectData {
         kinect2.initDepth();
         kinect2.initDevice();
         displayKinect = createImage(kinect2.depthWidth, kinect2.depthHeight, RGB);
+        
+        newBlobList = new BlobDetection(kinect2.depthWidth, kinect2.depthHeight);
+        newBlobList.setPosDiscrimination(true);
+        newBlobList.setThreshold(0.3f);
     }
     
     void display() {
@@ -45,6 +49,12 @@ class KinectData {
         }
         // Updates the display window with the data in the pixels[] array
         displayKinect.updatePixels();
+        blurAlgorithm(displayKinect, 10);
+        //Compute the blobs for the current frame after the blur has been applied
+        newBlobList.computeBlobs(displayKinect.pixels);
+        drawBlobsAndEdges(true, true, newBlobList);
+        detectBlobs(newBlobList);
+        
     }
     
     // Return the depth threshold

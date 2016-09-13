@@ -5,7 +5,7 @@ void drawBlobsAndEdges(boolean drawBlobs, boolean drawEdges, BlobDetection newBl
     EdgeVertex eA, eB;
     for (int n = 0; n < newBlobList.getBlobNb(); n++) {
         b = newBlobList.getBlob(n);
-        if (b != null && b.h > 0) {
+        if (b != null && ((b.h * height) > 30)) {
             if (drawEdges) {
                 strokeWeight(3);
                 stroke(0, 0, 255);

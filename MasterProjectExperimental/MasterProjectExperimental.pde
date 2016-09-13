@@ -40,9 +40,7 @@ void setup() {
     size(512, 424, P2D);
     kinect = new KinectData(this);
 
-    newBlobList = new BlobDetection(512, 424);
-    newBlobList.setPosDiscrimination(true);
-    newBlobList.setThreshold(0.1f);
+
     blobList = new ArrayList<TrackedBlob>();
     
     oscP5Location1 = new OscP5(this, 3334);
@@ -64,15 +62,6 @@ void draw() {
     
     //Display the Kinect image
     kinect.display();
-    
-    //Appy the blur algorithm to the video so that tiny blobs don't cause problems
-    blurAlgorithm(displayKinect, 10);
-    
-    //Compute the blobs for the current frame after the blur has been applied
-    newBlobList.computeBlobs(displayKinect.pixels);
-    
-    detectBlobs(newBlobList);
-    drawBlobsAndEdges(true, true, newBlobList);
 
     // Display image
     image(displayKinect, 0, 0);
