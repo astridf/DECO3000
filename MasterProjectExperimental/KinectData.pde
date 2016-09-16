@@ -2,7 +2,7 @@
 class KinectData {
     
     // Depth threshold
-    int depthThreshold = 900;
+    int depthThreshold = 750;
     
     //Kinect2 class
     Kinect2 kinect2;
@@ -54,7 +54,6 @@ class KinectData {
         newBlobList.computeBlobs(displayKinect.pixels);
         drawBlobsAndEdges(true, true, newBlobList);
         detectBlobs(newBlobList);
-        
     }
     
     // Return the depth threshold

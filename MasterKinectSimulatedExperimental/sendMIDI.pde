@@ -55,7 +55,6 @@ void blobsToMidi() {
         for (int j = 0; j < 2; j++) {
             //Check if the blob ID from the leftBlobs list matches the blob ID stored
             if (blobIDsAndChannels[j][0] == leftBlobs.get(i) && leftBlobs.get(i) != 0){
-                //println( blobIDsAndChannels[j][0] + " left matches " + blobIDsAndChannels[j][1]);
                 if (j == 0){
                     //midi1.sendNoteOn(1, 50, 50);
                     sendMIDI(midi1, leftBlobs.get(i), j+1);
@@ -161,7 +160,7 @@ void sendMIDI(MidiBus midiPort, int id, int channel) {
         if(blob.getID() == id) {
              //Y axis NOTE
              float blobY = map(blob.getBlobY(), 0, 428, 0, 127);
-             midiPort.sendNoteOn(1, int(blobY), 127); 
+             midiPort.sendNoteOn(1, int(blobY), 66); 
              
              //Depth
              int blobDepth = 63; //Will implement once depth is stable
@@ -194,5 +193,4 @@ void sendMIDI(MidiBus midiPort, int id, int channel) {
              break;
         }
     }
-   
 }

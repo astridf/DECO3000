@@ -55,9 +55,7 @@ void blobsToMidi() {
         for (int j = 0; j < 2; j++) {
             //Check if the blob ID from the leftBlobs list matches the blob ID stored
             if (blobIDsAndChannels[j][0] == leftBlobs.get(i) && leftBlobs.get(i) != 0){
-                //println( blobIDsAndChannels[j][0] + " left matches " + blobIDsAndChannels[j][1]);
                 if (j == 0){
-                    //midi1.sendNoteOn(1, 50, 50);
                     sendMIDI(midi1, leftBlobs.get(i), j+1);
                 }
                 else {
@@ -80,6 +78,7 @@ void blobsToMidi() {
                 leftBlobs.set(i, 0);
             }
         }
+        
     }
     leftBlobs.clear();
     
@@ -93,7 +92,6 @@ void blobsToMidi() {
             if (blobIDsAndChannels[j + 2][0] == middleBlobs.get(i) && middleBlobs.get(i) != 0){
                 //println(blobIDsAndChannels[j + 2][0] + " middle matches " + blobIDsAndChannels[j + 2][1]);
                 if (j == 0){
-                    //midi1.sendNoteOn(1, 50, 50);
                     sendMIDI(midi3, middleBlobs.get(i), j+3);
                 }
                 else {
@@ -161,7 +159,8 @@ void sendMIDI(MidiBus midiPort, int id, int channel) {
         if(blob.getID() == id) {
              //Y axis NOTE
              float blobY = map((blob.getBlobY()-150), 0, 274, 0, 127);
-             midiPort.sendNoteOn(1, int(blobY), 127); 
+             
+             midiPort.sendNoteOn(1, int(blobY), 66); 
              
              //Depth
              int threshold = kinect.getThreshold();

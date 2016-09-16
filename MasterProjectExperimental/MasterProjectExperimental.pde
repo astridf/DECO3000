@@ -40,7 +40,6 @@ void setup() {
     size(512, 424, P2D);
     kinect = new KinectData(this);
 
-
     blobList = new ArrayList<TrackedBlob>();
     
     oscP5Location1 = new OscP5(this, 3334);
@@ -59,20 +58,16 @@ void setup() {
 
 void draw() {
     background(0);
-    //image(displayKinect, 0, 0);
     //Display the Kinect image
     kinect.display();
-
-    // Display image
-    //image(displayKinect, 0, 0);
     
     //Display Blob Info
     for (TrackedBlob blob : blobList) {
         blob.display();
     }
     
-    //blobsToMidi();
-    //sendTUIO();
+    blobsToMidi();
+    sendTUIO();
 
     int threshold = kinect.getThreshold();
     fill(235);

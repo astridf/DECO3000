@@ -70,13 +70,11 @@ void draw() {
         video.read();
         videoinput.copy(video, 0, 15, 512, 428, 0, 15, 512, 428);
     }
-    //image(videoinput, 0, 0);
     
     //Appy the blur algorithm to the video so that tiny blobs don't cause problems
     blurAlgorithm(videoinput, 10);
     //Compute the blobs for the current frame after the blur has been applied
     newBlobList.computeBlobs(videoinput.pixels);
-
 
     detectBlobs(newBlobList);
     drawBlobsAndEdges(true, true, newBlobList);

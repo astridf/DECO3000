@@ -102,11 +102,28 @@ void detectBlobs(BlobDetection newBlobList) {
     }
             
     //Delete blobs that aren't used
-    for (int i = blobList.size()-1; i >= 0; i--) {
+    for (int i = blobList.size ()-1; i >= 0; i--) {
         TrackedBlob tb = blobList.get(i);
         if (tb.delete) {
+            if (tb.getID() == blobIDsAndChannels[0][0]) {
+                midi1.sendNoteOff(1, 0, 0);
+            } 
+            else if (tb.getID() == blobIDsAndChannels[1][0]) {
+                midi2.sendNoteOff(1, 0, 0);
+            } 
+            else if (tb.getID() == blobIDsAndChannels[2][0]) {
+                midi3.sendNoteOff(1, 0, 0);
+            } 
+            else if (tb.getID() == blobIDsAndChannels[3][0]) {
+                midi4.sendNoteOff(1, 0, 0);
+            } 
+            else if (tb.getID() == blobIDsAndChannels[4][0]) {
+                midi5.sendNoteOff(1, 0, 0);
+            } 
+            else if (tb.getID() == blobIDsAndChannels[5][0]) {
+                midi6.sendNoteOff(1, 0, 0);
+            }
             blobList.remove(i);
         }
     }
-    
 }
