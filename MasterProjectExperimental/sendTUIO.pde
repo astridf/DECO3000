@@ -22,7 +22,28 @@ void sendTUIO() {
        //Get the current blob
        float currentX = float(blob.getBlobX())/width;
        float currentY = float(blob.getBlobY())/height;
+       
+       float blobSpeed = 0;
+        if (blob.getBlobSpeed() > 28) {
+            blobSpeed = 28;
+        } else {
+            blobSpeed = blob.getBlobSpeed();
+        }  
+
+        float blobLifeSpan = 0f;
+        if (blob.getAliveTime() > 127) {
+            blobLifeSpan = 127;
+        } else {
+            blobLifeSpan = blob.getAliveTime();
+        }   
         
+        //Depth
+        int threshold = kinect.getThreshold();
+        int blobDepth = blob.getDepth();
+        //Need to map threshold as 0, max push in as 127
+        //I've put it as 250mm for now, will need to adjust
+        float depthVal = map(blobDepth, threshold, threshold - 250, 0, 127);
+
         currentY = (((currentY * 424f) - 150f) /274f);
 
         oSCMessage2 = new OscMessage("/tuio/2Dcur");
@@ -30,9 +51,9 @@ void sendTUIO() {
         oSCMessage2.add(blob.getID());
         oSCMessage2.add(currentX);
         oSCMessage2.add(currentY);
-        oSCMessage2.add(0f);
-        oSCMessage2.add(0f);
-        oSCMessage2.add(float(2));
+        oSCMessage2.add(blobSpeed);
+        oSCMessage2.add(blobLifeSpan);
+        oSCMessage2.add(depthVal);
         oSCBundle.add(oSCMessage2);
     }
     

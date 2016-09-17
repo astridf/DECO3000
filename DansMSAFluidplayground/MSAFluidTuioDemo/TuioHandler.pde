@@ -54,9 +54,14 @@ void updateTUIO() {
             vx = random(-tuioStationaryForce, tuioStationaryForce);
             vy = random(-tuioStationaryForce, tuioStationaryForce);
         }
+        
+        //tcur.getXSpeed() equals the blob speed (0 to 28)
+        //tcur.getYSpeed() equals the blob alivetime, don't ask why... (0 to 127)
+        //tcur.getMotionAccel() equals the depth (0 to 127) (simulated counting up to 127 on non-Kinect version)
+        
         addForce(tcur.getX(), tcur.getY(), vx, vy);
         //my way of getting the TUIO info out of the thing
-        sendVariable(tcur.getX(),tcur.getY(), vx, vy, tcur.getMotionAccel(), tcur.getMotionSpeed());
+        sendVariable(tcur.getX(),tcur.getY(), vx, vy, tcur.getXSpeed(), tcur.getYSpeed());
         
          /*
         Im not 100% sure if this is all we get with TUIO Cursor.  I check out most of the methods
