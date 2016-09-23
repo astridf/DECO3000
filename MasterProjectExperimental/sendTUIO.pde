@@ -3,6 +3,11 @@ int frameNum = 0;
 float[][] sendBlobs;
 OscBundle oSCBundle;
 
+float avgDepth = 0;
+float avgTime = 0;
+float avgSpeed = 0;
+
+
 void sendTUIO() {
    oSCBundle = new OscBundle();
    OscMessage oSCMessage2 = null;
@@ -29,13 +34,15 @@ void sendTUIO() {
         } else {
             blobSpeed = blob.getBlobSpeed();
         }  
+        avgSpeed += blobSpeed;
 
         float blobLifeSpan = 0f;
         if (blob.getAliveTime() > 127) {
             blobLifeSpan = 127;
         } else {
             blobLifeSpan = blob.getAliveTime();
-        }   
+        }  
+        avgTime += blobLifeSpan; 
         
         //Depth
         int threshold = kinect.getThreshold();
@@ -43,6 +50,7 @@ void sendTUIO() {
         //Need to map threshold as 0, max push in as 127
         //I've put it as 250mm for now, will need to adjust
         float depthVal = map(blobDepth, threshold, threshold - 250, 0, 127);
+        avgDepth += depthVal;
 
         currentY = (((currentY * 424f) - 150f) /274f);
 
@@ -63,4 +71,16 @@ void sendTUIO() {
     oSCBundle.add(oSCMessage3);
     oscP5Location1.send(oSCBundle, location2);
     frameNum++;
+        
+    if (blobList.size() > 0) {
+        avgDepth = avgDepth / blobList.size();
+        avgTime = avgTime / blobList.size();
+        avgSpeed = avgSpeed / blobList.size();
+    }
+    
+    oscP5Averages.send("/blobdata", new Object[] {avgSpeed, avgTime, avgDepth}, netAddressAverages);
+    
+    avgDepth = 0;
+    avgTime = 0;
+    avgSpeed = 0;
 }
