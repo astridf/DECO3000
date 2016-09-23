@@ -4,6 +4,10 @@ float[][] sendBlobs;
 OscBundle oSCBundle;
 float countDepth = 0;
 
+float avgDepth = 0;
+float avgTime = 0;
+float avgSpeed = 0;
+
 void sendTUIO() {
     oSCBundle = new OscBundle();
     OscMessage oSCMessage2 = null;
@@ -30,6 +34,7 @@ void sendTUIO() {
         } else {
             blobSpeed = blob.getBlobSpeed();
         }  
+        avgSpeed += blobSpeed;
 
         float blobLifeSpan = 0f;
         if (blob.getAliveTime() > 127) {
@@ -37,10 +42,12 @@ void sendTUIO() {
         } else {
             blobLifeSpan = blob.getAliveTime();
         }     
+        avgTime += blobLifeSpan;
         
         if (countDepth > 127){
             countDepth = 0;
         }
+        avgDepth += countDepth;
 
         //currentY = (((currentY * 424f) - 150f) /274f);
 
@@ -63,5 +70,17 @@ void sendTUIO() {
     oSCBundle.add(oSCMessage3);
     oscP5Location1.send(oSCBundle, location2);
     frameNum++;
+    
+    if (blobList.size() > 0) {
+        avgDepth = avgDepth / blobList.size();
+        avgTime = avgTime / blobList.size();
+        avgSpeed = avgSpeed / blobList.size();
+    }
+    
+    oscP5Averages.send("/blobdata", new Object[] {avgSpeed, avgTime, avgDepth}, netAddressAverages);
+    
+    avgDepth = 0;
+    avgTime = 0;
+    avgSpeed = 0;
 }
 

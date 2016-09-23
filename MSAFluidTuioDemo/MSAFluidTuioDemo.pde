@@ -33,7 +33,11 @@ import msafluid.*;
 import javax.media.opengl.GL2;
 import java.text.*;
 import java.util.*;
+import oscP5.*;
+import netP5.*;
 
+OscP5 oscP5;
+NetAddress myRemoteLocation;
 
 final float FLUID_WIDTH = 120;
 float invWidth, invHeight;    // inverse of screen dimensions
@@ -67,6 +71,27 @@ int lastTimeMovementDetected;
 "If I could be a real human, my name would be Reginald Walter.  Not relevant but yer",
 " 'I hate it' - Hitler.  Thats a good thing, who wants hitler to like there stuff?"
  };
+ 
+//Average depth of all current blobs
+//Will be set to 0 when no blobs
+//Otherwise, it will be between 0 and 127 (as a Float)
+float averageDepth = 0;
+
+//Average speed of all current blobs
+//Will be set to 0 when no blobs
+//Otherwise, it will be between 0 and 28 (as a Float)
+float averageSpeed = 0;
+
+//Average alive time of all current blobs (frames)
+//Will be set to 0 when no blobs
+//Otherwise, it will be between 0 and 127 (as a Float)
+//In any individual blob, once the number of alive frames reaches 127, it will keep sending 127
+float averageAliveTime = 0;
+
+
+/* Use map(valueyouwanttoconvert, lowerbound, upperbound, newlowerbound, newupperbound) 
+    to convert these values to whatever you need them to be for the visuals 
+    https://processing.org/reference/map_.html */
 
 void setup() {
     size(displayWidth, displayHeight, P3D);
@@ -94,6 +119,9 @@ void setup() {
     cb.setOAuthAccessToken("727321708684681217-KR87hT0YKSj7UzucawZeZucH6fP2Y7n");//1371960072-kPN7N3r6qTIvk1mWVmJP7EIaDFj6i7KLTqKnPYE
     cb.setOAuthAccessTokenSecret("BErMebkc8F08H8Jllwg0jRktjSPb8RPSJYB0MsrYvfKem"); //78yRJaGv45cTrP6K2nEuzgs6vCNwLCSpRtH8FFBz2Z5MR
     twitter = new TwitterFactory(cb.build()).getInstance();
+    
+    oscP5 = new OscP5(this,12000);
+    myRemoteLocation = new NetAddress("127.0.0.1",32000);
     
 }
 
@@ -155,6 +183,19 @@ void draw() {
        };  
    } 
 
+}
+
+void oscEvent(OscMessage theOscMessage) {
+    //Filter out the right messages
+    if(theOscMessage.checkAddrPattern("/blobdata") == true) {
+        //Check if the messages are in the correct format (float, float, float)
+        if(theOscMessage.checkTypetag("fff")) {
+          //Grab the data from the message
+          averageSpeed = theOscMessage.get(0).floatValue();
+          averageAliveTime = theOscMessage.get(1).floatValue();
+          averageDepth = theOscMessage.get(2).floatValue();
+        }
+    }
 }
 
 void mousePressed() {

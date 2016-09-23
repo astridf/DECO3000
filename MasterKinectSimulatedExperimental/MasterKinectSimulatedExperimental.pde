@@ -24,6 +24,10 @@ OscP5 oscP5Location1;
 //Set up osc net address
 NetAddress location2;
 
+//New OSC location & net address for averaged values
+OscP5 oscP5Averages;
+NetAddress netAddressAverages;
+
 //Image which will contain each frame of the video
 PImage videoinput;
 
@@ -49,6 +53,8 @@ void setup() {
     
     oscP5Location1 = new OscP5(this, 3334);
     location2 = new NetAddress("127.0.0.1", 3333);
+    oscP5Averages = new OscP5(this, 32000);
+    netAddressAverages = new NetAddress("127.0.0.1", 12000);
     
     //May need to change this for your computer
     midi1 = new MidiBus(this, 3, "midi1");
