@@ -49,9 +49,9 @@ void sendTUIO() {
         oSCMessage2.add(blob.getID());
         oSCMessage2.add(currentX);
         oSCMessage2.add(currentY);
-        oSCMessage2.add(blobSpeed);
-        oSCMessage2.add(blobLifeSpan);
-        oSCMessage2.add(countDepth);
+        oSCMessage2.add(0f);
+        oSCMessage2.add(0f);
+        oSCMessage2.add(float(2));
         oSCBundle.add(oSCMessage2);
         
         countDepth++;
